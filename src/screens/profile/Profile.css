@@ -1,134 +1,133 @@
-
-.row {
-    display:flex;
-    height: 200px;
-}
-.card-partition-row {
-    display:flex;
-    height:100%;
-}
-.row1 {
-    display:flex;
-    height:100%;
-}
-.column-left {
-    width:15%;
-
-}
-.card-partition-col-left {
-    width:40%;
+#dp {
+    width: 120px;
+    height: 125px;
+    border: 1px solid whitesmoke;
 }
 
-.card-partition-col-right {
-    width:50%;
-    height:100%;
+#info-container{
+    margin: 10px;
 }
 
-.column-center {
-    width:70%;
+#edit-name {
+    width: 35px;
+    height: 30px;
+    margin-left: 10px;
 }
 
-.column-right {
-    width:15%;
-
-}
-.col-left {
-    width:10%;
-    height:50%;
-}
-.col-center {
-    width:40%;
-
-}
-.col-right {
-    width:40%;
-
-}
-.col-l {
-    width:30%;
-}
-.col-c {
-    width:30%;
-}
-.col-r {
-    width:40%;
-}
-.row-one {
-    padding-top: 10px;
-    padding-bottom: 10px ;
-    align-items: flex-start;
-    display:flex;
-    font-size: 22px;
-    font-style: bold;
+#info-container{
+    margin: 10px;
 }
 
-.row-two {
-    padding-bottom: 10px ;
-    display:flex;
-    align-items:center;
-    font-size: 18px;
+.edit-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: white;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: .4rem;
 }
 
-.row-three {
-
-    display:flex;
-    align-items: flex-end;
-    font-size: 24px;
-}
-.dispNone {
+.hide {
     display: none;
 }
 
-.dispBlock {
+.show {
     display: block;
 }
 
-.red {
-    color:red;
+.selected-image-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 15px;
+    background-color: white;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: .3rem;
+    box-shadow: black;
+    inline-size: fit-content;
 }
 
-.image-properties {
-    display:flex;
-    justify-content: center;
-    align-items: center;
+.image-on-grid{
+    cursor: pointer;
 }
-.row-card {
-    display:flex;
-    height:100%;
+
+#modal-profile-pic{
+    height: 60px;
+    width: 60px;
+    border: 1px solid whitesmoke;
 }
-.column-card-left {
 
-    float: left;
-    width: 70%;
-
-    height:100%;
+#edit-profile {
+    width: 35px;
+    height: 30px;
+    margin-left: 10px;
 }
-.column-card-right {
 
-    float: right;
+.edit-modal-div {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 15px;
+    background-color: white;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: .3rem;
+
+}
+
+.selected-image-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 15px;
+    background-color: white;
+    border: 1px solid rgba(0,0,0,.2);
+    border-radius: .3rem;
+    box-shadow: black;
+    inline-size: fit-content;
+}
+
+.lower-section{
+    vertical-align: bottom;
+    position: fixed;
+    bottom: 0;
+    padding-bottom: 20px;
     width: 50%;
-
-    height:100%;
-
-}
-.row:after {
-    content: "";
-    display: table;
-    clear: both;
-    height:100%;
 }
 
-.infoSection{
-    padding-top: 10px;
+.like-button{
+    display: inline-block;
+    padding: 0;
+    min-width: 0;
+    min-height: 0;
 }
-.row-card-up {
-    display:flex;
-    flex-direction:column;
-    float:top;
-}
-.row-card-down {
-    display:flex;
-    flex-direction:row;
-    float:bottom;
 
+.right-section{
+    display: flex;
+    flex-direction: column;
+    justify-content:space-between;
+}
+
+.user-detail-section {
+    vertical-align: top;
+
+}
+
+.divider{
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.add-button {
+    vertical-align: bottom;
+    inline-size: fit-content;
+}
+
+.comment-add-section {
+    vertical-align: bottom;
+    margin-bottom: 0%;
 }

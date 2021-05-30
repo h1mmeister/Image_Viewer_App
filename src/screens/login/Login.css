@@ -1,17 +1,30 @@
-
-.cardStyle {
+.loginFormContainer {
     display: flex;
     justify-content: center;
     margin-top: 2%;
 }
 
-.dispNone {
+.card {
+    padding: 3%;
+    width: 25%;
+}
+
+.card-content {
+    min-width: auto;
+}
+
+.hide {
     display: none;
 }
 
-.dispBlock {
+.show {
     display: block;
 }
+
 .red {
     color:red;
+}
+
+.form-control {
+    width: 100%;
 }

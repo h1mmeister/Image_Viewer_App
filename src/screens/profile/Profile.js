@@ -1,372 +1,425 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
+import Header from "../../common/Header";
 import "./Profile.css";
-import Button from "@material-ui/core/Button";
-import Modal from "react-modal";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import Input from "@material-ui/core/Input";
-import PropTypes from "prop-types";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Typography from "@material-ui/core/Typography";
-import Header from "../../common/header/Header";
-import { withStyles } from "@material-ui/core/styles";
-import GridList from "@material-ui/core/GridList";
-import GridListTile from "@material-ui/core/GridListTile";
-import testData from "../../common/Test";
-import Avatar from "@material-ui/core/Avatar";
-import pencil from "../../assets/icon/pencil.png";
-import hearticon from "../../assets/icon/hearticon.svg";
-
-/* Defined classes styles for all relevant imported components */
-
-const styles = (theme) => ({
-  root: {
-    flexGrow: 1,
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "space-around",
-    overflow: "hidden",
-    backgroundColor: theme.palette.background.paper,
-  },
-  bigAvatar: {
-    margin: "20px",
-    width: "60px",
-    height: "60px",
-    float: "center",
-    display: "flex",
-  },
-  gridList: {
-    width: 1100,
-    height: 800,
-  },
-});
-
-const customStylesImagePost = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-    height: "70%",
-    width: "60%",
-  },
-};
-
-const customStylesEditFullName = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-  },
-};
-
-const TabContainer = function (props) {
-  return (
-    <Typography component="div" style={{ padding: 0, textAlign: "center" }}>
-      {props.children}
-    </Typography>
-  );
-};
-
-TabContainer.propTypes = {
-  children: PropTypes.node.isRequired,
-};
+import {
+  Avatar,
+  Container,
+  Fab,
+  Typography,
+  Grid,
+  Modal,
+  FormControl,
+  InputLabel,
+  Input,
+  Button,
+  FormHelperText,
+  Card,
+  CardMedia,
+  Divider,
+  CardActions,
+  IconButton,
+  TextField,
+} from "@material-ui/core/";
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import EditIcon from "@material-ui/icons/Edit";
 
 class Profile extends Component {
   constructor() {
     super();
     this.state = {
-      modalIsOpen: false,
-      fullnameRequired: "dispNone",
-      fullname: "",
-      ownerInfo: [],
-      mediaInfo: [],
-      imageDetail: {},
-      UpdateFullname: "dispNone",
-      ApiFullName: "dispBlock",
-      full_name: "",
+      userImages: [],
+      id: "153142790119051",
+      username: "h1meister",
+      fullName: "Himanshu Yadav",
+      url:
+        "https://scontent.fluh1-2.fna.fbcdn.net/v/t1.6435-9/72391352_2525437740869400_5500882181574098944_n.jpg?_nc_cat=105&ccb=1-3&_nc_sid=e3f864&_nc_ohc=9n7-d1SvUeMAX9YYabc&_nc_ht=scontent.fluh1-2.fna&oh=3cfa7bf9b4160abb94187239ed79ba41&oe=60DABA8D",
+      loggedIn: sessionStorage.getItem("access-token") == null ? false : true,
+      numPosts: Math.round(Math.random() * 100),
+      followedBy: Math.round(Math.random() * 100),
+      following: Math.round(Math.random() * 100),
+      nameEditModalOpen: false,
+      nameEditModalClose: true,
+      nameRequireLabel: "hide",
+      imageDetailsModalOpen: false,
+      imageDetailsModalClose: true,
+      imageSelected: null,
+      indexOfImageSelected: null,
     };
   }
 
-  updateClickHandler = (e) => {
-    this.state.fullname === ""
-      ? this.setState({ fullnameRequired: "dispBlock" })
-      : this.setState({ fullnameRequired: "dispNone" });
-
-    if (this.state.fullname !== "") {
-      this.setState({
-        full_name: this.state.fullname,
-        UpdateFullname: "dispBlock",
-        ApiFullName: "dispNone",
-        modalIsOpen: false,
-      });
+  editNameFieldChangeHandler = (e) => {
+    if (e.target.value === "") {
+      this.setState({ newFullName: e.target.value });
+    } else {
+      this.setState({ newFullName: e.target.value });
     }
   };
 
-  inputFullnameChangeHandler = (e) => {
-    this.setState({ fullname: e.target.value });
+  editNameUpdateButtonHandler = () => {
+    if (
+      this.state.newFullName == null ||
+      this.state.newFullName.trim() === ""
+    ) {
+      this.setState({
+        nameRequireLabel: "show",
+      });
+    } else {
+      this.setState({
+        fullName: this.state.newFullName,
+        newFullName: "",
+        nameRequireLabel: "hide",
+      });
+
+      this.closeEditNameModalHandler();
+    }
   };
 
-  openEditModalHandler = () => {
+  openEditNameModalHandler = () => {
+    this.setState({ nameEditModalOpen: true, nameEditModalClose: false });
+  };
+
+  closeEditNameModalHandler = () => {
+    this.setState({ nameEditModalOpen: false, nameEditModalClose: true });
+  };
+
+  imageForDetailsClickHandler = (image, index) => {
+    this.setState({ imageSelected: image, indexOfImageSelected: index });
+    this.openImageDetailsModalHandler();
+  };
+
+  openImageDetailsModalHandler = () => {
     this.setState({
-      modalIsOpen: true,
-      fullnameRequired: "dispNone",
-      fullname: "",
+      imageDetailsModalOpen: true,
+      imageDetailsModalClose: false,
     });
   };
 
-  closeEditModalHandler = () => {
-    this.setState({ modalIsOpen: false });
-  };
-
-  openImageModalHandler = (imageId) => {
+  closeImageDetailsModalHandler = () => {
     this.setState({
-      imagemodalIsOpen: true,
+      imageDetailsModalOpen: false,
+      imageDetailsModalClose: true,
     });
   };
 
-  closeImageModalHandler = () => {
+  likeHandler = (index) => {
+    let likedImages = this.state.userImages;
+    likedImages[index].liked = !likedImages[index].liked;
+    this.setState({ userImages: likedImages });
+  };
+
+  addCommentHandler = () => {
+    let index = this.state.indexOfImageSelected;
+    var textbox = document.getElementById("add-user-comment");
+    if (textbox.value == null || textbox.value.trim() === "") {
+      return;
+    }
+    let userImagesTemp = this.state.userImages;
+    let c = userImagesTemp[index].comments;
+    if (c == null) {
+      c = textbox.value;
+    } else {
+      c = c.push([textbox.value]);
+    }
     this.setState({
-      imagemodalIsOpen: false,
+      userImages: userImagesTemp,
     });
+    textbox.value = "";
   };
 
-  componentWillMount() {
-    let ownerData = null;
-    let xhr = new XMLHttpRequest();
-    let that = this;
-    xhr.addEventListener("readystatechange", function () {
-      if (this.readyState === 4) {
-        that.setState({
-          ownerInfo: JSON.parse(this.responseText).data,
-        });
-      }
-    });
-    xhr.open(
-      "GET",
+  async componentDidMount() {
+    let getUserImages =
       this.props.baseUrl +
-        "?access_token=8661035776.d0fcd39.39f63ab2f88d4f9c92b0862729ee2784"
-    );
-    xhr.send(ownerData);
-
-    let mediaData = null;
-    let xhrMediaData = new XMLHttpRequest();
-
-    xhrMediaData.addEventListener("readystatechange", function () {
-      if (this.readyState === 4) {
-        that.setState({
-          mediaInfo: JSON.parse(this.responseText).data,
-        });
-      }
-    });
-    xhrMediaData.open(
-      "GET",
+      "me/media?fields=id,caption&access_token=" +
+      sessionStorage.getItem("access-token");
+    let getPostDetails =
       this.props.baseUrl +
-        "media/recent/?access_token=8661035776.d0fcd39.39f63ab2f88d4f9c92b0862729ee2784"
-    );
-    xhrMediaData.send(mediaData);
+      "$postId" +
+      "?fields=id,media_type,media_url,username,timestamp&access_token=" +
+      sessionStorage.getItem("access-token");
 
-    let currentState = this.state;
-    currentState.imageDetail = this.state.mediaInfo.filter((img) => {
-      return img.id === this.props.imageId;
-    });
-    this.setState({ currentState });
+    let response = await fetch(getUserImages);
+    let posts = await response.json();
+    posts = posts.data;
+
+    for (let i = 0; i < posts.length; i++) {
+      response = await fetch(getPostDetails.replace("$postId", posts[i].id));
+      let details = await response.json();
+      posts[i].url = details.media_url;
+      posts[i].username = details.username;
+      posts[i].timestamp = details.timestamp;
+      posts[i].comments = [];
+      posts[i].tags = "#upgrad #upgradproject #reactjs";
+      posts[i].likes = Math.round(Math.random() * 100);
+      posts[i].liked = false;
+    }
+    this.setState({ userImages: posts });
   }
 
   render() {
-    const { classes } = this.props;
-
-    return (
-      <div>
+    if (this.state.loggedIn === false) return <Redirect to="/" />;
+    else
+      return (
         <div>
-          <Header />
-        </div>
-
-        <div className="infoSection">
-          <div className="row">
-            <div className="column-left"></div>
-
-            <div className="column-center">
-              <div className="row1">
-                <div className="col-left">
-                  {
-                    <Avatar className={classes.bigAvatar}>
-                      <img
-                        src={this.state.ownerInfo.profile_picture}
-                        alt={"logo"}
-                      />
-                    </Avatar>
-                  }
-                </div>
-
-                <div className="col-center">
-                  <span>
-                    <div className="row-one">
-                      {this.state.ownerInfo.username}
-                    </div>
-                  </span>
-                  <span>
-                    <div className="row-two">
-                      <div className="col-l">Posts : {testData[0].posts}</div>
-                      <div className="col-c">
-                        Follows : {testData[0].follows}
-                      </div>
-                      <div className="col-r">
-                        Followed By : {testData[0].followed_by}
-                      </div>
-                    </div>
-                  </span>
-                  <div className="row-three">
-                    <span>
-                      <div className={this.state.ApiFullName}>
-                        {this.state.ownerInfo.full_name}
-                      </div>
-                      <div className={this.state.UpdateFullname}>
-                        {this.state.full_name}
-                      </div>
-                    </span>
-                    <Button
-                      variant="fab"
-                      color="secondary"
-                      className="edit-icon-button"
-                    >
-                      <img
-                        src={pencil}
-                        alt={"pencil-logo"}
-                        onClick={this.openEditModalHandler}
-                      />
-                    </Button>
-                  </div>
-                </div>
-
-                <div>
-                  <Modal
-                    ariaHideApp={false}
-                    isOpen={this.state.modalIsOpen}
-                    onRequestClose={this.closeEditModalHandler}
-                    style={customStylesEditFullName}
+          <Header
+            {...this.props}
+            loggedIn={true}
+            showMyAccount={false}
+            dpUrl={this.state.url}
+          />
+          <Container>
+            <div style={{ height: 32 }}></div>
+            <Grid container spacing={3} justify="flex-start">
+              <Grid item xs={2} />
+              <Grid item xs={2} style={{ paddingTop: 25 }}>
+                <Avatar
+                  alt="profile_pic"
+                  id="dp"
+                  variant="circle"
+                  src={this.state.url}
+                  style={{ marginTop: 10 }}
+                />
+              </Grid>
+              <Grid item xs={5} id="info-container">
+                <Typography
+                  variant="h4"
+                  component="h1"
+                  style={{ paddingBottom: 15 }}
+                >
+                  {this.state.username}
+                </Typography>
+                <Grid
+                  container
+                  spacing={3}
+                  justify="center"
+                  style={{ paddingBottom: 15 }}
+                >
+                  <Grid item xs={4}>
+                    Posts:&nbsp;{this.state.numPosts}
+                  </Grid>
+                  <Grid item xs={4}>
+                    Follows:&nbsp;{this.state.following}
+                  </Grid>
+                  <Grid item xs={4}>
+                    Followed By:&nbsp;{this.state.followedBy}
+                  </Grid>
+                </Grid>
+                <Typography
+                  variant="h6"
+                  component="h2"
+                  style={{ marginTop: 5 }}
+                >
+                  {this.state.fullName}
+                  <Fab
+                    color="secondary"
+                    id="edit-name"
+                    aria-label="edit"
+                    onClick={this.openEditNameModalHandler}
                   >
-                    <Tabs className="tabs" value={this.state.value}>
-                      <Tab label="Edit" />
-                    </Tabs>
-                    <TabContainer>
-                      <FormControl required>
-                        <InputLabel htmlFor="fullname">Full Name</InputLabel>
-                        <Input
-                          id="fullname"
-                          type="text"
-                          fullname={this.state.fullname}
-                          onChange={this.inputFullnameChangeHandler}
-                        />
-                        <FormHelperText className={this.state.fullnameRequired}>
-                          <span className="red">required</span>
-                        </FormHelperText>
-                      </FormControl>
-                      <br />
-                      <br />
+                    <EditIcon fontSize="small" />
+                  </Fab>
+                </Typography>
 
+                <Modal
+                  open={this.state.nameEditModalOpen}
+                  onClose={this.closeEditNameModalHandler}
+                >
+                  <div className="edit-modal">
+                    <Typography variant="h5" style={{ paddingBottom: 15 }}>
+                      Edit
+                    </Typography>
+                    <FormControl required>
+                      <InputLabel htmlFor="fullName">Full Name</InputLabel>
+                      <Input
+                        id="fullName"
+                        type="text"
+                        onChange={this.editNameFieldChangeHandler}
+                      />
+                      <FormHelperText>
+                        <span
+                          className={this.state.nameRequireLabel}
+                          style={{ color: "red" }}
+                        >
+                          required
+                        </span>
+                      </FormHelperText>
+                    </FormControl>
+                    <div style={{ marginTop: 25 }}>
                       <Button
                         variant="contained"
                         color="primary"
-                        onClick={this.updateClickHandler}
+                        onClick={this.editNameUpdateButtonHandler}
                       >
                         UPDATE
                       </Button>
-                    </TabContainer>
-                  </Modal>
-                </div>
-
-                <div className="col-right"></div>
-              </div>
-            </div>
-            <div className="column-right"></div>
-          </div>
-        </div>
-        <br />
-        <div className={classes.root}>
-          <GridList cellHeight={300} className={classes.gridList} cols={3}>
-            {this.state.mediaInfo.map((image) => (
-              <GridListTile key={image.id} cols={image.cols || 1}>
-                <img
-                  src={image.images.standard_resolution.url}
-                  alt={image.text}
-                  onClick={this.openImageModalHandler}
-                />
-              </GridListTile>
-            ))}
-          </GridList>
-        </div>
-        <div>
-          <Modal
-            ariaHideApp={false}
-            isOpen={this.state.imagemodalIsOpen}
-            onRequestClose={this.closeImageModalHandler}
-            style={customStylesImagePost}
-          >
-            <div className="row-card">
-              <div className="column-card-left">
-                <img src={testData[0].url} alt={"uploadedpic1"} />
-              </div>
-
-              <div className="column-card-right">
-                <div className="row-card-up">
-                  {
-                    <Avatar className={classes.bigAvatar}>
-                      <img src={testData[0].profile_picture} alt={"logo"} />
-                    </Avatar>
-                  }
-                  {testData[0].username}
-
-                  <hr />
-
-                  <Typography variant="caption">
-                    {testData[0].full_name}
-                  </Typography>
-                  <Typography>#images #description</Typography>
-                </div>
-
-                <br />
-                <br />
-                <div className="row-card-down">
-                  <img
-                    src={hearticon}
-                    alt={"heartlogo"}
-                    onClick={() => this.iconClickHandler()}
-                    className="iconColor"
-                  />
-
-                  <FormControl>
-                    <InputLabel htmlFor="imagecomment">
-                      Add a Comment
-                    </InputLabel>
-                    <Input
-                      id="imagecomment"
-                      type="text"
-                      onChange={this.imageCommentChangeHandler}
-                    />
-                  </FormControl>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={this.addCommentOnClickHandler}
+                    </div>
+                  </div>
+                </Modal>
+              </Grid>
+              <Grid item xs={4} />
+            </Grid>
+          </Container>
+          <Container>
+            <Grid container spacing={0} direction="row" alignItems="center">
+              {this.state.userImages &&
+                this.state.userImages.map((details, index) => (
+                  <Grid
+                    item
+                    xs={4}
+                    key={details.id}
+                    onClick={() =>
+                      this.imageForDetailsClickHandler(details, index)
+                    }
+                    className="image-on-grid"
                   >
-                    ADD
-                  </Button>
-                </div>
+                    <Card variant="outlined">
+                      <CardMedia
+                        style={{ height: 0, paddingTop: "100%" }}
+                        image={details.url}
+                      />
+                    </Card>
+                  </Grid>
+                ))}
+            </Grid>
+            <Modal
+              open={this.state.imageDetailsModalOpen}
+              onClose={this.closeImageDetailsModalHandler}
+            >
+              <div className="selected-image-modal">
+                <Grid
+                  container
+                  spacing={2}
+                  direction="row"
+                  justify="center"
+                  alignItems="flex-start"
+                >
+                  <Grid item xs={6}>
+                    {this.state.imageSelected ? (
+                      <img
+                        alt={this.state.indexOfImageSelected}
+                        src={this.state.imageSelected.url}
+                        style={{ height: "100%", width: "100%" }}
+                      />
+                    ) : null}
+                  </Grid>
+                  <Grid item xs={6}>
+                    {this.state.imageSelected ? (
+                      <div className="right-section">
+                        <div>
+                          <Grid
+                            className="user-detail-section"
+                            container
+                            spacing={1}
+                            direction="row"
+                            style={{ marginBottom: 5 }}
+                          >
+                            <Grid item xs={2}>
+                              <Avatar
+                                id="modal-profile-pic"
+                                alt={this.state.fullName}
+                                src={this.state.url}
+                              />
+                            </Grid>
+                            <Grid item xs={10}>
+                              <Typography
+                                style={{ paddingTop: 20, paddingLeft: 0 }}
+                              >
+                                {this.state.imageSelected.username}
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                          <Divider className="divider" variant="fullWidth" />
+                          <Typography style={{ marginTop: 5 }}>
+                            {this.state.imageSelected.caption != null
+                              ? this.state.imageSelected.caption.split("\n")[0]
+                              : null}
+                          </Typography>
+                          <Typography>
+                            <div className="tags">
+                              {" "}
+                              {this.state.imageSelected.tags}{" "}
+                            </div>
+                          </Typography>
+                          <Typography
+                            component="div"
+                            className="comment-section"
+                          >
+                            {this.state.userImages[
+                              this.state.indexOfImageSelected
+                            ].comments &&
+                              this.state.userImages[
+                                this.state.indexOfImageSelected
+                              ].comments.length > 0 &&
+                              this.state.userImages[
+                                this.state.indexOfImageSelected
+                              ].comments.map((comment) => {
+                                return (
+                                  <p style={{ fontSize: 16 }} key={comment}>
+                                    <b>{this.state.username}:</b> {comment}
+                                  </p>
+                                );
+                              })}
+                          </Typography>
+                        </div>
+                        <div className="lower-section">
+                          <CardActions disableSpacing>
+                            <IconButton
+                              onClick={() =>
+                                this.likeHandler(
+                                  this.state.indexOfImageSelected
+                                )
+                              }
+                              edge="start"
+                            >
+                              {this.state.imageSelected.liked ? (
+                                <FavoriteIcon style={{ color: "red" }} />
+                              ) : (
+                                <FavoriteBorderIcon />
+                              )}
+                            </IconButton>
+                            <span>
+                              {this.state.imageSelected.liked
+                                ? this.state.imageSelected.likes + 1
+                                : this.state.imageSelected.likes}{" "}
+                              likes
+                            </span>
+                          </CardActions>
+                          <Grid
+                            className="comment-add-section"
+                            container
+                            spacing={3}
+                            alignItems="flex-end"
+                          >
+                            <Grid item xs={10}>
+                              <TextField
+                                id="add-user-comment"
+                                label="Add a comment"
+                                fullWidth={true}
+                              />
+                            </Grid>
+                            <Grid item xs={2} className="add-button">
+                              <Button
+                                variant="contained"
+                                id="add-comments-button"
+                                color="primary"
+                                onClick={() => this.addCommentHandler()}
+                              >
+                                Add
+                              </Button>
+                            </Grid>
+                          </Grid>
+                        </div>
+                      </div>
+                    ) : null}
+                  </Grid>
+                </Grid>
               </div>
-            </div>
-          </Modal>
+            </Modal>
+          </Container>
         </div>
-      </div>
-    );
+      );
   }
 }
 
-export default withStyles(styles)(Profile);
+export default Profile;

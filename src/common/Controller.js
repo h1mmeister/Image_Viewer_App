@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import Profile from '../screens/profile/Profile';
 import Home from '../screens/home/Home';
 import Login from '../screens/login/Login';
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
+import Profile from '../screens/profile/Profile';
 
 class Controller extends Component {
 
@@ -11,16 +11,18 @@ class Controller extends Component {
         this.state = {
             loggedIn: sessionStorage.getItem("access-token") == null ? false : true
         }
-        this.baseUrl = "https://api.instagram.com/v1/users/self/";
+        this.baseUrl = "https://graph.instagram.com/";
     }
 
     render() {
         return (
             <div>
                 <Router>
-                    <Route exact path='/' render={(props) => <Login {...props}  baseUrl={this.baseUrl} />} />
-                    <Route path='/home/' render={(props) => this.state.loggedIn ? (<Home {...props} baseUrl={this.baseUrl} />) : (<Redirect to='/' />)} />
-                    <Route path='/profile/' render={(props) => this.state.loggedIn ? (<Profile {...props} baseUrl={this.baseUrl} />) : (<Redirect to='/' />)} />
+                    <Switch>
+                        <Route exact path="/" render={({history},props)  => <Login {...props} baseUrl={this.baseUrl} history={history}/>} />
+                        <Route exact path="/home" render={({history},props) => <Home {...props} baseUrl={this.baseUrl} history={history} />} />
+                        <Route exact path="/profile" render={({history},props) => <Profile {...props} baseUrl={this.baseUrl} history={history} />} />
+                    </Switch>
                 </Router>
             </div>
         );

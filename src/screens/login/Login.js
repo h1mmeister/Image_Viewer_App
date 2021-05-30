@@ -1,120 +1,122 @@
 import React, { Component } from "react";
-import "./Login.css";
-import Header from "../../common/header/Header";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
+import Button from "@material-ui/core/Button";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
-import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
 import FormHelperText from "@material-ui/core/FormHelperText";
+import { Card, CardContent, Typography } from "@material-ui/core";
+import "./Login.css";
+import Header from "../../common/Header";
+import { Redirect } from "react-router-dom";
 
 class Login extends Component {
   constructor() {
     super();
     this.state = {
-      anchorEl: null,
-      usernamePasswordIncorrect: "dispNone",
-      usernameRequired: "dispNone",
-      passwordRequired: "dispNone",
       username: "",
       password: "",
+      usernameRequiredLabel: "hide",
+      passwordRequiredLabel: "hide",
+      invalidLoginLabel: "hide",
       loggedIn: sessionStorage.getItem("access-token") == null ? false : true,
     };
   }
 
-  loginClickHandler = () => {
-    let usernameInstagram = "himanshu";
-    let passwordInstagram = "himanshu";
-    let accessToken = "8661035776.d0fcd39.39f63ab2f88d4f9c92b0862729ee2784";
-
-    if (
-      this.state.username === usernameInstagram &&
-      this.state.password === passwordInstagram
-    ) {
-      window.sessionStorage.setItem("access-token", accessToken);
-      this.props.history.push("/home/");
-    }
-
-    this.state.username === ""
-      ? this.setState({ usernameRequired: "dispBlock" })
-      : this.setState({ usernameRequired: "dispNone" });
-    this.state.password === ""
-      ? this.setState({ passwordRequired: "dispBlock" })
-      : this.setState({ passwordRequired: "dispNone" });
-
-    (this.state.username !== "") &
-    (this.state.password !== "") &
-    (this.state.username !== usernameInstagram ||
-      this.state.password !== passwordInstagram)
-      ? this.setState({ usernamePasswordIncorrect: "dispBlock" })
-      : this.setState({ usernamePasswordIncorrect: "dispNone" });
-  };
-
-  inputUsernameChangeHandler = (e) => {
+  usernameChangedHandler = (e) => {
+    this.setState({ invalidLoginLabel: "hide" });
     this.setState({ username: e.target.value });
   };
 
-  inputPasswordChangeHandler = (e) => {
+  passwordChangedHandler = (e) => {
+    this.setState({ invalidLoginLabel: "hide" });
     this.setState({ password: e.target.value });
   };
 
+  loginClickedHandler = () => {
+    let mockUsername = "himanshu";
+    let mockPassword = "himanshu";
+    let accessToken =
+      "IGQVJYX0p5V3dzVExyRG5vZAVp1RmNnaS1jb1ZAZAclBwQ3AyNUJFR1hRdndzcVpZAVTdBcDdUWWF5ZAmFJUmlwWThLT0ppcUo0UFFrVjM3aDNGVjBqSEw5SVk4NFdUVGVvWG0wWmg1T09Vek5HZAS0wTkU1clI0SjBtR3ZApMnFN";
+
+    this.state.username === ""
+      ? this.setState({ usernameRequiredLabel: "red" })
+      : this.setState({ usernameRequiredLabel: "hide" });
+    this.state.password === ""
+      ? this.setState({ passwordRequiredLabel: "red" })
+      : this.setState({ passwordRequiredLabel: "hide" });
+
+    if (
+      this.state.username === mockUsername &&
+      this.state.password === mockPassword
+    ) {
+      window.sessionStorage.setItem("access-token", accessToken);
+      this.setState({ invalidLoginLabel: "hide" });
+      this.props.history.push("/home");
+    } else {
+      if (this.state.username !== "" && this.state.password !== "")
+        this.setState({ invalidLoginLabel: "red" });
+    }
+  };
+
   render() {
-    return (
-      <div>
-        <Header heading="Image Viewer" />
-        <div className="cardStyle">
-          <Card>
-            <CardContent>
-              <Typography variant="title">LOGIN</Typography>
-              <FormControl required>
-                <InputLabel htmlFor="username">Username</InputLabel>
-                <Input
-                  id="username"
-                  type="text"
-                  username={this.state.username}
-                  onChange={this.inputUsernameChangeHandler}
-                />
-                <FormHelperText className={this.state.usernameRequired}>
-                  <span className="red">required</span>
-                </FormHelperText>
-              </FormControl>
-              <br />
-              <FormControl required>
-                <InputLabel htmlFor="password">Password</InputLabel>
-                <Input
-                  id="password"
-                  type="password"
-                  password={this.state.password}
-                  onChange={this.inputPasswordChangeHandler}
-                />
-                <FormHelperText className={this.state.passwordRequired}>
-                  <span className="red">required</span>
-                </FormHelperText>
+    if (this.state.loggedIn === true) return <Redirect to="/home" />;
+    else
+      return (
+        <div>
+          <Header {...this.props} loggedIn={false} />
+          <div className="loginFormContainer">
+            <Card className="card">
+              <CardContent className="card-content">
+                <Typography variant="h5">LOGIN</Typography>
                 <br />
-                <FormHelperText
-                  className={this.state.usernamePasswordIncorrect}
-                >
-                  <span className="red">
+                <FormControl className="form-control" required>
+                  <InputLabel htmlFor="username">Username</InputLabel>
+                  <Input
+                    id="username"
+                    type="text"
+                    onChange={this.usernameChangedHandler}
+                  />
+                  <FormHelperText>
+                    <span className={this.state.usernameRequiredLabel}>
+                      required
+                    </span>
+                  </FormHelperText>
+                </FormControl>
+                <br />
+                <br />
+                <FormControl className="form-control" required>
+                  <InputLabel htmlFor="loginPassword">Password</InputLabel>
+                  <Input
+                    id="loginPassword"
+                    type="password"
+                    onChange={this.passwordChangedHandler}
+                  />
+                  <FormHelperText>
+                    <span className={this.state.passwordRequiredLabel}>
+                      required
+                    </span>
+                  </FormHelperText>
+                </FormControl>
+                <br />
+                <br />
+                <FormHelperText>
+                  <span className={this.state.invalidLoginLabel}>
                     Incorrect username and/or password
                   </span>
                 </FormHelperText>
-              </FormControl>
-              <br />
-              <br />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={this.loginClickHandler}
-              >
-                LOGIN
-              </Button>
-            </CardContent>
-          </Card>
+                <br />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={this.loginClickedHandler}
+                >
+                  LOGIN
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </div>
-    );
+      );
   }
 }
 
