@@ -33,8 +33,7 @@ class Profile extends Component {
       id: "153142790119051",
       username: "h1meister",
       fullName: "Himanshu Yadav",
-      url:
-        "https://scontent.fluh1-2.fna.fbcdn.net/v/t1.6435-9/72391352_2525437740869400_5500882181574098944_n.jpg?_nc_cat=105&ccb=1-3&_nc_sid=e3f864&_nc_ohc=9n7-d1SvUeMAX9YYabc&_nc_ht=scontent.fluh1-2.fna&oh=3cfa7bf9b4160abb94187239ed79ba41&oe=60DABA8D",
+      url: "https://scontent.fluh1-2.fna.fbcdn.net/v/t1.6435-9/72391352_2525437740869400_5500882181574098944_n.jpg?_nc_cat=105&ccb=1-3&_nc_sid=e3f864&_nc_ohc=9n7-d1SvUeMAX9YYabc&_nc_ht=scontent.fluh1-2.fna&oh=3cfa7bf9b4160abb94187239ed79ba41&oe=60DABA8D",
       loggedIn: sessionStorage.getItem("access-token") == null ? false : true,
       numPosts: Math.round(Math.random() * 100),
       followedBy: Math.round(Math.random() * 100),
@@ -111,7 +110,7 @@ class Profile extends Component {
 
   addCommentHandler = () => {
     let index = this.state.indexOfImageSelected;
-    var textbox = document.getElementById("add-user-comment");
+    let textbox = document.getElementById("add-user-comment");
     if (textbox.value == null || textbox.value.trim() === "") {
       return;
     }

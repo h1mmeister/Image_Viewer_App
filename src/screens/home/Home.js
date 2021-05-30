@@ -28,8 +28,7 @@ class Home extends Component {
       filteredImages: [],
       id: "153142790119051",
       username: "h1meister",
-      url:
-        "https://scontent.fluh1-2.fna.fbcdn.net/v/t1.6435-9/72391352_2525437740869400_5500882181574098944_n.jpg?_nc_cat=105&ccb=1-3&_nc_sid=e3f864&_nc_ohc=9n7-d1SvUeMAX9YYabc&_nc_ht=scontent.fluh1-2.fna&oh=3cfa7bf9b4160abb94187239ed79ba41&oe=60DABA8D",
+      url: "https://scontent.fluh1-2.fna.fbcdn.net/v/t1.6435-9/72391352_2525437740869400_5500882181574098944_n.jpg?_nc_cat=105&ccb=1-3&_nc_sid=e3f864&_nc_ohc=9n7-d1SvUeMAX9YYabc&_nc_ht=scontent.fluh1-2.fna&oh=3cfa7bf9b4160abb94187239ed79ba41&oe=60DABA8D",
       loggedIn: sessionStorage.getItem("access-token") == null ? false : true,
     };
   }
@@ -62,7 +61,7 @@ class Home extends Component {
     }
     this.setState({ userImages: posts });
     this.setState({ filteredImages: posts.filter((x) => true) });
-    console.log(this.state.userImages);
+    // console.log(this.state.userImages);
   }
 
   likeHandler = (index) => {
@@ -72,7 +71,7 @@ class Home extends Component {
   };
 
   commentHandler = (index) => {
-    var textField = document.getElementById("textfield-" + index);
+    let textField = document.getElementById("textfield-" + index);
     if (textField.value == null || textField.value.trim() === "") {
       return;
     }
